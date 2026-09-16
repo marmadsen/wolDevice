@@ -172,6 +172,9 @@ void startEthernet() {
 void startWifi() {
   Serial.println("Connecting to WiFi...");
   WiFi.mode(WIFI_STA);
+  // Modem power save adds hundreds of ms of latency and drops connections,
+  // which makes the HTTP server unreachable in practice. Keep the radio on.
+  WiFi.setSleep(false);
   WiFi.setAutoReconnect(true);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
