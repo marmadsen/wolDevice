@@ -1,0 +1,12 @@
+{
+  "domain": "esp32_wol",
+  "name": "ESP32 WoL Bridge",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/marmadsen/wolDevice",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/marmadsen/wolDevice/issues",
+  "requirements": [],
+  "version": "1.1.0"
+}

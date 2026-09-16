@@ -1,0 +1,10 @@
+{
+  "platformio-ide.useBuiltinPIOCore": false,
+  "files.associations": {
+    "*.h": "cpp"
+  },
+"C_Cpp.default.cppStandard": "c++17",
+"chat.tools.terminal.autoApprove": {
+    "pio": true
+}
+}

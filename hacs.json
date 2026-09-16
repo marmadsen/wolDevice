@@ -1,0 +1,5 @@
+{
+  "name": "ESP32 WoL Bridge",
+  "render_readme": true,
+  "homeassistant": "2022.9.0"
+}

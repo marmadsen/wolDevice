@@ -1,0 +1,40 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ESP32 WoL Bridge",
+        "description": "Enter the Wi-Fi address of the bridge. Leave the MAC empty to use the default target compiled into the firmware.",
+        "data": {
+          "host": "Bridge IP address or hostname",
+          "name": "Name of the PC",
+          "token": "Token (only if set in the firmware)",
+          "target_mac": "Target MAC address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the bridge. Check the address and that it is on Wi-Fi.",
+      "invalid_auth": "The bridge rejected the token.",
+      "invalid_mac": "Use the form AA:BB:CC:DD:EE:FF."
+    },
+    "abort": {
+      "already_configured": "This bridge is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ESP32 WoL Bridge options",
+        "data": {
+          "token": "Token (only if set in the firmware)",
+          "target_mac": "Target MAC address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the bridge.",
+      "invalid_auth": "The bridge rejected the token.",
+      "invalid_mac": "Use the form AA:BB:CC:DD:EE:FF."
+    }
+  }
+}
