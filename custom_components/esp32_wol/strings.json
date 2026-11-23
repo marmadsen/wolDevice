@@ -26,6 +26,7 @@
       "init": {
         "title": "ESP32 WoL Bridge options",
         "data": {
+          "host": "Bridge IP address or hostname",
           "token": "Token (only if set in the firmware)",
           "target_mac": "Target MAC address"
         }

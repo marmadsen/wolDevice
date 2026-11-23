@@ -6,6 +6,9 @@
 // ignored by git. Copy secrets.example.h to secrets.h and fill it in.
 #include "secrets.h"
 
+// Name the bridge registers with the router's DHCP server.
+constexpr const char* WIFI_HOSTNAME = "wol-bridge";
+
 // MAC address woken by GET /wake when no mac parameter is given.
 constexpr const char* DEFAULT_TARGET_MAC = "BC:FC:E7:6D:A7:08";
 

@@ -88,7 +88,7 @@ class WolBridgeConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class WolBridgeOptionsFlow(config_entries.OptionsFlow):
-    """Let the user change the token and target MAC."""
+    """Let the user change the host, token and target MAC."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         self.config_entry = config_entry
@@ -97,10 +97,11 @@ class WolBridgeOptionsFlow(config_entries.OptionsFlow):
         errors: dict[str, str] = {}
         current = {**self.config_entry.data, **self.config_entry.options}
         if user_input is not None:
-            data = _check_optional(user_input, errors)
+            host = _clean(user_input.get(CONF_HOST)) or current[CONF_HOST]
+            data = {CONF_HOST: host, **_check_optional(user_input, errors)}
             if not errors:
                 try:
-                    await _validate(self.hass, current[CONF_HOST], data[CONF_TOKEN])
+                    await _validate(self.hass, host, data[CONF_TOKEN])
                 except WolBridgeAuthError:
                     errors[CONF_TOKEN] = "invalid_auth"
                 except WolBridgeError:
@@ -108,6 +109,10 @@ class WolBridgeOptionsFlow(config_entries.OptionsFlow):
             if not errors:
                 return self.async_create_entry(title="", data=data)
             current = {**current, **user_input}
-        return self.async_show_form(
-            step_id="init", data_schema=vol.Schema(_optional_fields(current)), errors=errors
+        schema = vol.Schema(
+            {
+                vol.Required(CONF_HOST, default=current.get(CONF_HOST, "")): str,
+                **_optional_fields(current),
+            }
         )
+        return self.async_show_form(step_id="init", data_schema=schema, errors=errors)

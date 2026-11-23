@@ -39,7 +39,7 @@ class WakeButton(ButtonEntity):
             name=entry.title,
             manufacturer="DIY",
             model="ESP32-S3 W5500 WoL bridge",
-            configuration_url=f"http://{entry.data[CONF_HOST]}/",
+            configuration_url=f"http://{({**entry.data, **entry.options})[CONF_HOST]}/",
         )
 
     async def async_press(self) -> None:

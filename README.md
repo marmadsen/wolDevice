@@ -110,4 +110,5 @@ automation:
 - If the serial log says `W5500 not detected`, check the SPI pin mapping.
 - If the Ethernet link stays down, check the cable and the far end. The link LED on the RJ45 jack should light even when the PC is off.
 - If WoL does not wake the PC, make sure Wake on Magic Packet is enabled in the network card's driver settings and in the BIOS, and that the card stays powered when the PC is off. On Windows, Fast Startup can interfere with waking from a full shutdown.
-- If Home Assistant cannot reach the bridge, check that both are on the same Wi‑Fi network and that the bridge's IP has not changed.
+- If Home Assistant cannot reach the bridge, check that both are on the same Wi‑Fi network and that the bridge's IP has not changed. After moving to a new router, update the address under the integration's Configure button. The bridge registers as `wol-bridge` in the router's client list.
+- If the bridge does not join Wi‑Fi, watch the serial log for `WiFi disconnected, reason ...`. The bridge retries every 30 seconds while disconnected. The ESP32-S3 has no 5 or 6 GHz radio, so the SSID must also be broadcast on 2.4 GHz.

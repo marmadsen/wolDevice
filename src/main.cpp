@@ -8,6 +8,8 @@
 
 namespace {
 constexpr uint16_t WOL_PORT = 9;
+constexpr uint32_t WIFI_RETRY_INTERVAL_MS = 30000;
+uint32_t lastWifiRetryMs = 0;
 WebServer server(80);
 EthernetUDP udp;
 
@@ -169,14 +171,26 @@ void startEthernet() {
   }
 }
 
+void onWifiEvent(arduino_event_id_t event, arduino_event_info_t info) {
+  if (event == ARDUINO_EVENT_WIFI_STA_DISCONNECTED) {
+    const auto reason = static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason);
+    Serial.printf("WiFi disconnected, reason %d (%s)\n", reason, WiFi.disconnectReasonName(reason));
+  } else if (event == ARDUINO_EVENT_WIFI_STA_GOT_IP) {
+    Serial.printf("WiFi got IP: %s\n", WiFi.localIP().toString().c_str());
+  }
+}
+
 void startWifi() {
   Serial.println("Connecting to WiFi...");
+  WiFi.onEvent(onWifiEvent);
+  WiFi.setHostname(WIFI_HOSTNAME);
   WiFi.mode(WIFI_STA);
   // Modem power save adds hundreds of ms of latency and drops connections,
   // which makes the HTTP server unreachable in practice. Keep the radio on.
   WiFi.setSleep(false);
   WiFi.setAutoReconnect(true);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  lastWifiRetryMs = millis();
 
   for (int i = 0; i < 30; ++i) {
     delay(500);
@@ -188,6 +202,21 @@ void startWifi() {
   }
 
   Serial.println("WiFi did not connect yet, will keep retrying in the background");
+}
+
+// Auto-reconnect in arduino-esp32 2.x permanently gives up after some failure
+// reasons (e.g. AUTH_FAIL while a router is being swapped or rebooted), which
+// leaves the bridge offline until a power cycle. Retry periodically instead.
+void maintainWifi() {
+  if (WiFi.status() == WL_CONNECTED) {
+    lastWifiRetryMs = millis();
+    return;
+  }
+  if (millis() - lastWifiRetryMs >= WIFI_RETRY_INTERVAL_MS) {
+    lastWifiRetryMs = millis();
+    Serial.println("WiFi still disconnected, retrying");
+    WiFi.reconnect();
+  }
 }
 }  // namespace
 
@@ -210,6 +239,7 @@ void setup() {
 }
 
 void loop() {
+  maintainWifi();
   server.handleClient();
   delay(10);
 }
